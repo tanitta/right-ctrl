@@ -1,0 +1,14 @@
+.dub
+docs.json
+__dummy.html
+docs/
+right-ctrl.so
+right-ctrl.dylib
+right-ctrl.dll
+right-ctrl.a
+right-ctrl.lib
+right-ctrl-test-*
+*.exe
+*.o
+*.obj
+*.lst
