@@ -86,6 +86,11 @@ enum Button
     None, 
 }  
 
+enum Direction{
+    Plus = 1.0f,
+    Minus = -1.0f
+}
+
 ///
 class SDLGamePad{
     public{
@@ -119,6 +124,18 @@ class SDLGamePad{
         bool getButton(Button button){
             auto sdlButton = _registerButtons[button];
             return SDL_JoystickGetButton(_handle, sdlButton).to!bool;
+        }
+
+        bool getButtonFromAxis(Button button, Direction direction){
+            uint sdlAxis;
+            if(direction == Direction.Plus){
+                sdlAxis = _registerButtonsFromAxisPlusDir[button];
+            }else{
+                sdlAxis = _registerButtonsFromAxisMinusDir[button];
+            }
+            auto v = SDL_JoystickGetAxis(_handle, sdlAxis).to!float / 32768f;
+            import std.math: abs;
+            return v*direction > _threshold;
         }
 
         bool isAttached(){
@@ -244,13 +261,9 @@ class SDLGamePad{
 
 
         SDLGamePad update(){
-            // for(int i=0;i<32;i++){
-            //     import std.stdio;
-            //     import std.conv;
-            //     auto state = SDL_JoystickGetButton(_handle, i).to!bool;
-            //     writeln(i.to!string ~ " button is: " ~ state.to!string);
-            // }
             _registerButtons.keys.each!(button => _updateButtonSubjects[button].put(getButton(button)));
+            _registerButtonsFromAxisPlusDir.keys.each!(button => _updateButtonSubjects[button].put(getButtonFromAxis(button, Direction.Plus)));
+            _registerButtonsFromAxisMinusDir.keys.each!(button => _updateButtonSubjects[button].put(getButtonFromAxis(button, Direction.Minus)));
             _registerAxises.keys.each!(axis => _updateAxisSubjects[axis].put(getAxis(axis)));
             return this;
         };
@@ -266,6 +279,16 @@ class SDLGamePad{
             if(!_updateButtonSubjects.keys.canFind(button)) _updateButtonSubjects[button] = new SubjectObject!bool();
             return this;
         }
+
+        SDLGamePad registerButtonFromAxis(Button button, int axisId, Direction dir){
+            if(dir == Direction.Plus){
+                _registerButtonsFromAxisPlusDir[button] = axisId;
+            }else{
+                _registerButtonsFromAxisMinusDir[button] = axisId;
+            }
+            if(!_updateButtonSubjects.keys.canFind(button)) _updateButtonSubjects[button] = new SubjectObject!bool();
+            return this;
+        }
     }//public
 
     private{
@@ -274,6 +297,8 @@ class SDLGamePad{
         SubjectObject!bool[Button] _updateButtonSubjects;
         int[Axis] _registerAxises;
         int[Button] _registerButtons;
+        int[Button] _registerButtonsFromAxisPlusDir;
+        int[Button] _registerButtonsFromAxisMinusDir;
         float _threshold = 0.8;
         int _offset = 20;
     }//private
@@ -305,25 +330,19 @@ SDLGamePad setupGamePad(SDLGamePad pad){
     }
     version(Windows){
         pad.threshold(0.8)
-        //    .registerAxis(Axis.LHorizontal, 0)
-        //    .registerAxis(Axis.LVertical,   1)
-           .registerAxis(Axis.RHorizontal, 2)
-           .registerAxis(Axis.RVertical,   5)
-           .registerButton(Button.Select,   9)
-           .registerButton(Button.Start,    8)
-           .registerButton(Button.RightStick, 11)
-           .registerButton(Button.LeftStick,  10)
-           .registerButton(Button.L1, 6)
-           .registerButton(Button.L2, 4)
-           .registerButton(Button.R1, 7)
-           .registerButton(Button.R2, 5)
-        //    .registerButton(Button.CrossUp,    4)
-        //    .registerButton(Button.CrossDown,  6)
-        //    .registerButton(Button.CrossLeft,  7)
-        //    .registerButton(Button.CrossRight, 5)
-           .registerButton(Button.Y, 0)
-           .registerButton(Button.A, 2)
-           .registerButton(Button.X, 3)
+           .registerAxis(Axis.RHorizontal, 4)
+           .registerAxis(Axis.RVertical,   3)
+           .registerButton(Button.Select,   6)
+           .registerButton(Button.Start,    7)
+           .registerButton(Button.RightStick, 12)
+           .registerButton(Button.LeftStick, 11)
+           .registerButtonFromAxis(Button.L2, 5, Direction.Minus)
+           .registerButtonFromAxis(Button.R2,  5, Direction.Plus)
+           .registerButton(Button.L1, 4)
+           .registerButton(Button.R1, 5)
+           .registerButton(Button.Y, 3)
+           .registerButton(Button.A, 0)
+           .registerButton(Button.X, 2)
            .registerButton(Button.B, 1);
     }
     return pad;

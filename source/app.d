@@ -430,6 +430,8 @@ void sendKey(ushort keycode, bool type, int flag){
         input.type = 1;
         input.ki = keyboardInput;
         INPUT[] inputs = [input];
+        writeln(keycode);
+        SendInput(1, inputs.ptr, INPUT.sizeof);
     }
 }
 
@@ -565,6 +567,12 @@ version(Windows){
         R = 0x52,
         E = 0x45,
         H = 0x48,
+        C = 0x43,
+        D = 0x44,
+        T = 0x54,
+        V = 0x56,
+        L = 0x4C,
+        W = 0x57,
         Tab = 0x09,
         F5= 0x74,
         F6= 0x75,
