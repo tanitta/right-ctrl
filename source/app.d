@@ -83,25 +83,25 @@ class RightCtrl{
         auto createDisposableLayer0(){
             Disposable[] disposables;
             disposables ~=
-            _currentPad.onDownButton(Button.X)
+            _currentPad.onDownButton(Button.Y)
                        .doSubscribe!((_){
                                           downKey(Key.Z, 0x00100000);
                                           upKey(Key.Z);
                                       });
             disposables ~=
-            _currentPad.onDownButton(Button.A)
+            _currentPad.onDownButton(Button.B)
                        .doSubscribe((bool b){
                                                 downKey(Key.Z, 0x00120000);
                                                 upKey(Key.Z);
                                              });
             disposables ~=
-            _currentPad.onStayButtonPeriodicly(Button.Y)
+            _currentPad.onStayButtonPeriodicly(Button.X)
                        .doSubscribe((bool b){
                                                 downKey(Key.CloseBracket);
                                                 upKey(Key.CloseBracket);
                                         });
             disposables ~=
-            _currentPad.onStayButtonPeriodicly(Button.B)
+            _currentPad.onStayButtonPeriodicly(Button.A)
                        .doSubscribe((bool b){
                                                 downKey(Key.OpenBracket);
                                                 upKey(Key.OpenBracket);
@@ -125,7 +125,7 @@ class RightCtrl{
                                         });
 
             disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RUp)
+            _currentPad.onDownAxisButton(AxisButton.RLeft)
                        .doSubscribe((bool b){
                                                 downKey(Key.R);
                                         })
@@ -133,7 +133,7 @@ class RightCtrl{
                                            upKey(Key.R);
                                        });
             disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RUp)
+            _currentPad.onUpAxisButton(AxisButton.RLeft)
                        .doSubscribe((bool b){
                                                 upKey(Key.R);
                                                 downKey(Key.B);
@@ -157,7 +157,7 @@ class RightCtrl{
                                         });
 
             disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RLeft)
+            _currentPad.onDownAxisButton(AxisButton.RUp)
                        .doSubscribe((bool b){
                                                 downKey(Key.E);
                                         })
@@ -165,7 +165,7 @@ class RightCtrl{
                                            upKey(Key.E);
                                        });
             disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RLeft)
+            _currentPad.onUpAxisButton(AxisButton.RUp)
                        .doSubscribe((bool b){
                                                 upKey(Key.E);
                                                 downKey(Key.B);
@@ -196,41 +196,83 @@ class RightCtrl{
             disposables ~=
             _currentPad.onDownButton(Button.X)
                        .doSubscribe((bool b){
-                                                downKey(Key.B); 
-                                                upKey(Key.B);
+                                                downKey(Key.C, 0x00100000);
+                                                upKey(Key.C);
                                             });
             disposables ~=
             _currentPad.onDownButton(Button.A)
                        .doSubscribe((bool b){
-                                                downKey(Key.E); 
-                                                upKey(Key.E);
+                                                downKey(Key.D, 0x00100000);
+                                                upKey(Key.D);
                                             });
+
             disposables ~=
             _currentPad.onDownButton(Button.Y)
                        .doSubscribe((bool b){
-                                                downKey(Key.H); 
+                                                downKey(Key.T, 0x00100000);
+                                                upKey(Key.T);
                                             })
                        .withDisposed((){
-                                           upKey(Key.H);
                                        });
-            disposables ~=
-            _currentPad.onUpButton(Button.Y)
-                       .doSubscribe((bool b){
-                                                upKey(Key.H); 
-                                            });
+
             disposables ~=
             _currentPad.onDownButton(Button.B)
                        .doSubscribe((bool b){
-                                                downKey(Key.Z); 
+                                                downKey(Key.V, 0x00100000);
+                                                upKey(Key.V);
                                             })
                        .withDisposed((){
-                                           upKey(Key.Z);
+                                       });
+
+
+            disposables ~=
+            _currentPad.onDownAxisButton(AxisButton.RUp)
+                       .doSubscribe((bool b){
+                                                downKey(Key.L);
+                                        })
+                       .withDisposed((){
+                                           upKey(Key.L);
                                        });
             disposables ~=
-            _currentPad.onUpButton(Button.B)
+            _currentPad.onUpAxisButton(AxisButton.RUp)
                        .doSubscribe((bool b){
-                                                upKey(Key.Z); 
-                                            });
+                                                upKey(Key.W);
+                                                downKey(Key.B);
+                                                upKey(Key.B);
+                                        });
+            disposables ~=
+            _currentPad.onDownAxisButton(AxisButton.RLeft)
+                       .doSubscribe((bool b){
+                                                downKey(Key.W);
+                                        })
+                       .withDisposed((){
+                                           upKey(Key.R);
+                                       });
+            disposables ~=
+            _currentPad.onUpAxisButton(AxisButton.RLeft)
+                       .doSubscribe((bool b){
+                                                upKey(Key.W);
+                                                downKey(Key.B);
+                                                upKey(Key.B);
+                                        });
+
+
+            disposables ~=
+            _currentPad.onDownAxisButton(AxisButton.RRight)
+                       .doSubscribe((bool b){
+                                                downKey(Key.V);
+                                        })
+                       .withDisposed((){
+                                           upKey(Key.R);
+                                       });
+            disposables ~=
+            _currentPad.onUpAxisButton(AxisButton.RRight)
+                       .doSubscribe((bool b){
+                                                upKey(Key.V);
+                                                downKey(Key.B);
+                                                upKey(Key.B);
+                                        });
+
             return disposables;
         }
 
