@@ -244,6 +244,12 @@ class SDLGamePad{
 
 
         SDLGamePad update(){
+            // for(int i=0;i<32;i++){
+            //     import std.stdio;
+            //     import std.conv;
+            //     auto state = SDL_JoystickGetButton(_handle, i).to!bool;
+            //     writeln(i.to!string ~ " button is: " ~ state.to!string);
+            // }
             _registerButtons.keys.each!(button => _updateButtonSubjects[button].put(getButton(button)));
             _registerAxises.keys.each!(axis => _updateAxisSubjects[axis].put(getAxis(axis)));
             return this;
@@ -274,25 +280,51 @@ class SDLGamePad{
 }//class GamePad
 
 SDLGamePad setupGamePad(SDLGamePad pad){
-    return pad.threshold(0.8)
-              .registerAxis(Axis.LHorizontal, 0)
-              .registerAxis(Axis.LVertical,   1)
-              .registerAxis(Axis.RHorizontal, 2)
-              .registerAxis(Axis.RVertical,   3)
-              .registerButton(Button.Select,   0)
-              .registerButton(Button.Start,    3)
-              .registerButton(Button.RightStick, 2)
-              .registerButton(Button.LeftStick,  1)
-              .registerButton(Button.L1, 10)
-              .registerButton(Button.L2, 8)
-              .registerButton(Button.R1, 11)
-              .registerButton(Button.R2, 9)
-              .registerButton(Button.CrossUp,    4)
-              .registerButton(Button.CrossDown,  6)
-              .registerButton(Button.CrossLeft,  7)
-              .registerButton(Button.CrossRight, 5)
-              .registerButton(Button.Y, 12)
-              .registerButton(Button.A, 14)
-              .registerButton(Button.X, 15)
-              .registerButton(Button.B, 13);
+    version(OSX){
+        pad.threshold(0.8)
+           .registerAxis(Axis.LHorizontal, 0)
+           .registerAxis(Axis.LVertical,   1)
+           .registerAxis(Axis.RHorizontal, 2)
+           .registerAxis(Axis.RVertical,   3)
+           .registerButton(Button.Select,   0)
+           .registerButton(Button.Start,    3)
+           .registerButton(Button.RightStick, 2)
+           .registerButton(Button.LeftStick,  1)
+           .registerButton(Button.L1, 10)
+           .registerButton(Button.L2, 8)
+           .registerButton(Button.R1, 11)
+           .registerButton(Button.R2, 9)
+           .registerButton(Button.CrossUp,    4)
+           .registerButton(Button.CrossDown,  6)
+           .registerButton(Button.CrossLeft,  7)
+           .registerButton(Button.CrossRight, 5)
+           .registerButton(Button.Y, 12)
+           .registerButton(Button.A, 14)
+           .registerButton(Button.X, 15)
+           .registerButton(Button.B, 13);
+    }
+    version(Windows){
+        pad.threshold(0.8)
+        //    .registerAxis(Axis.LHorizontal, 0)
+        //    .registerAxis(Axis.LVertical,   1)
+           .registerAxis(Axis.RHorizontal, 2)
+           .registerAxis(Axis.RVertical,   5)
+           .registerButton(Button.Select,   9)
+           .registerButton(Button.Start,    8)
+           .registerButton(Button.RightStick, 11)
+           .registerButton(Button.LeftStick,  10)
+           .registerButton(Button.L1, 6)
+           .registerButton(Button.L2, 4)
+           .registerButton(Button.R1, 7)
+           .registerButton(Button.R2, 5)
+        //    .registerButton(Button.CrossUp,    4)
+        //    .registerButton(Button.CrossDown,  6)
+        //    .registerButton(Button.CrossLeft,  7)
+        //    .registerButton(Button.CrossRight, 5)
+           .registerButton(Button.Y, 0)
+           .registerButton(Button.A, 2)
+           .registerButton(Button.X, 3)
+           .registerButton(Button.B, 1);
+    }
+    return pad;
 }
