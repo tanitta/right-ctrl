@@ -10,13 +10,15 @@ import gamepad;
 import looprunner;
 import std.exception;
 
-extern(C) int* CGEventCreateKeyboardEvent(int* source, ushort key, bool flag);
+version(OSX){
+    extern(C) int* CGEventCreateKeyboardEvent(int* source, ushort key, bool flag);
 
-extern(C) void CGEventPost(int tap, int*);
+    extern(C) void CGEventPost(int tap, int*);
 
-extern(C) void CGEventSetFlags(int*, int);
+    extern(C) void CGEventSetFlags(int*, int);
 
-extern(C) void CFRelease (int* cf);
+    extern(C) void CFRelease (int* cf);
+}
 
 // extern(C) void CFRelease(int*);
 
@@ -312,14 +314,14 @@ class RightCtrl{
             Disposable[] disposables;
             bool[] states;
             foreach(pad; _gamepads){
-                ulong index = _gamepads.countUntil(pad);
+                uint index = _gamepads.countUntil(pad).to!uint;
                 states ~= false;
                 pad.setupGamePad;
                 disposables ~= pad.onUpdateButton(Button.Start).doSubscribe!(value => states[index] = value);
             }
 
             bool isDetected = false;
-            ulong detectedPadIndex = 0;
+            uint detectedPadIndex = 0;
             do{
                 SDL_JoystickUpdate();
                 foreach(i, pad; _gamepads){
@@ -383,10 +385,12 @@ void upKey(Key key, int flag = 0){
 }
 
 void sendKey(ushort keycode, bool type, int flag){
-    auto key = CGEventCreateKeyboardEvent(null, keycode, type);
-    CGEventSetFlags(key, flag);
-    CGEventPost(0, key);
-    CFRelease(key);
+    version(OSX){
+        auto key = CGEventCreateKeyboardEvent(null, keycode, type);
+        CGEventSetFlags(key, flag);
+        CGEventPost(0, key);
+        CFRelease(key);
+    }
 }
 
 enum Key{
