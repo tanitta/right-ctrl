@@ -330,8 +330,8 @@ SDLGamePad setupGamePad(SDLGamePad pad){
     }
     version(Windows){
         pad.threshold(0.8)
-           .registerAxis(Axis.RHorizontal, 4)
-           .registerAxis(Axis.RVertical,   3)
+           .registerAxis(Axis.RHorizontal, 3)
+           .registerAxis(Axis.RVertical,   4)
            .registerButton(Button.Select,   6)
            .registerButton(Button.Start,    7)
            .registerButton(Button.RightStick, 12)
