@@ -177,15 +177,15 @@ class RightCtrl{
             disposables ~=
             _currentPad.onDownAxisButton(AxisButton.RRight)
                        .doSubscribe((bool b){
-                                                downKey(Key.H);
+                                                downKey(Key.Space);
                                         })
                        .withDisposed((){
-                                           upKey(Key.H);
+                                           upKey(Key.Space);
                                        });
             disposables ~=
             _currentPad.onUpAxisButton(AxisButton.RRight)
                        .doSubscribe((bool b){
-                                                upKey(Key.H);
+                                                upKey(Key.Space);
                                                 downKey(Key.B);
                                                 upKey(Key.B);
                                         });
@@ -387,7 +387,7 @@ void downKey(Key key, int flag = 0){
             sendKey(Key.Control.to!ushort, true, 0);
             sendKey(key.to!ushort, true, 0);
             sendKey(Key.Control.to!ushort, false, 0);
-        }else if(flag == 0x00100000){ // ctrl + shift
+        }else if(flag == 0x00120000){ // ctrl + shift
             sendKey(Key.Control.to!ushort, true, 0);
             sendKey(Key.Shift.to!ushort, true, 0);
             sendKey(key.to!ushort, true, 0);
@@ -561,6 +561,7 @@ version(Windows){
         Shift = 0x10,
         OpenBracket = 0xDB,
         CloseBracket = 0xDD,
+        Space = 0x20,
         Z = 0x5A,
         I = 0x49,
         B = 0x42,
