@@ -50,6 +50,13 @@ class RightCtrl{
             Disposable[] disposableLayer0 = createDisposableLayer0;
             Disposable[] disposableLayer1;
             Disposable[] disposableLayer2;
+            import std.algorithm;
+
+            _currentPad.onDownButton(Button.Start)
+                       .doSubscribe!((_){
+                                             downKey(Key.Enter);
+                                             upKey(Key.Enter);
+                                        });
 
             _currentPad.onDownButton(Button.R1)
                        .doSubscribe!((_){
@@ -113,17 +120,16 @@ class RightCtrl{
             disposables ~=
             _currentPad.onDownButton(Button.RightStick)
                        .doSubscribe((bool b){
-                                                downKey(Key.I);
+                                                // downKey(Key.I);
+                                                toggleDefaultTool();
                                             })
                        .withDisposed((){
-                                           upKey(Key.I);
+                                        //    upKey(Key.I);
                                        });
             disposables ~=
             _currentPad.onUpButton(Button.RightStick)
                        .doSubscribe((bool b){
-                                                upKey(Key.I);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
+                                                // upKey(Key.I);
                                         });
 
             disposables ~=
@@ -138,8 +144,7 @@ class RightCtrl{
             _currentPad.onUpAxisButton(AxisButton.RLeft)
                        .doSubscribe((bool b){
                                                 upKey(Key.R);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
+                                                resetToolToDefault();
                                         });
 
             disposables ~=
@@ -154,24 +159,22 @@ class RightCtrl{
             _currentPad.onUpAxisButton(AxisButton.RDown)
                        .doSubscribe((bool b){
                                                 upKey(Key.Z);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
+                                                resetToolToDefault();
                                         });
 
             disposables ~=
             _currentPad.onDownAxisButton(AxisButton.RUp)
                        .doSubscribe((bool b){
-                                                downKey(Key.E);
+                                                downKey(Key.I);
                                         })
                        .withDisposed((){
-                                           upKey(Key.E);
+                                           upKey(Key.I);
                                        });
             disposables ~=
             _currentPad.onUpAxisButton(AxisButton.RUp)
                        .doSubscribe((bool b){
-                                                upKey(Key.E);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
+                                                upKey(Key.I);
+                                                resetToolToDefault();
                                         });
 
             disposables ~=
@@ -186,8 +189,7 @@ class RightCtrl{
             _currentPad.onUpAxisButton(AxisButton.RRight)
                        .doSubscribe((bool b){
                                                 upKey(Key.Space);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
+                                                resetToolToDefault();
                                         });
 
             return disposables;
@@ -304,6 +306,14 @@ class RightCtrl{
                                                 downKey(Key.F5); 
                                                 upKey(Key.F5); 
                                             });
+            disposables ~=
+            _currentPad.onDownButton(Button.RightStick)
+                       .doSubscribe((bool b){
+                                                downKey(Key.Control); 
+                                                downKey(Key.H); 
+                                                upKey(Key.H); 
+                                                upKey(Key.Control); 
+                                            });
             return disposables;
         }
 
@@ -327,7 +337,7 @@ class RightCtrl{
                 foreach(i, pad; _gamepads){
                     _gamepads[i].update;
                     isDetected = states.canFind(true);
-                    detectedPadIndex = i;
+                    detectedPadIndex = i.to!uint;
                     if(isDetected)break;
                 }
                 import std.algorithm.iteration: stdFold = fold;
@@ -352,7 +362,7 @@ class RightCtrl{
     private{
         SDLGamePad _currentPad;
         SDLGamePad[] _gamepads;
-
+        Key _defalutToolKey = Key.B;
 
 
         void detectAllGamePads(){
@@ -372,6 +382,24 @@ class RightCtrl{
 
             _gamepads.length.writeln;
             SDL_GetError().to!string.writeln;
+        }
+
+        void toggleDefaultTool(){
+            Key prevKey = _defalutToolKey;
+            if(_defalutToolKey == Key.B){
+                _defalutToolKey = Key.E;
+            }else{
+                _defalutToolKey = Key.B;
+            }
+
+            upKey(prevKey);
+            downKey(_defalutToolKey);
+            upKey(_defalutToolKey);
+        }
+
+        void resetToolToDefault(){
+            downKey(_defalutToolKey);
+            upKey(_defalutToolKey);
         }
     }//private
 }//class RightCtrl
@@ -557,6 +585,7 @@ version(OSX){
 
 version(Windows){
     enum Key{
+        Enter = 0x0D,
         Control = 0x11,
         Shift = 0x10,
         OpenBracket = 0xDB,
