@@ -3,6 +3,7 @@ import rx;
 import derelict.sdl2.sdl;
 import std.conv;
 import std.algorithm:each, canFind;
+import keybindable;
 
 enum Axis{
     LHorizontal, 
@@ -152,6 +153,10 @@ class SDLGamePad{
                     break;
             }
             return SDL_JoystickGetHat(_handle, 0) == sdlHat;
+        }
+
+        void setupKeyBind(KeyBindable bindable){
+            bindable.setup();
         }
 
         bool getButtonFromAxis(Button button, Direction direction){
