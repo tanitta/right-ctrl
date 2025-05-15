@@ -9,82 +9,107 @@ class KeyBindClipStudio: KeyBindable{
         return "ClipStudio";
     }
 
-    public Disposable[] setup(SDLGamePad pad){
-        Disposable[] disposables;
-        int currentLayer = 0;
+    Disposable[] _disposablesLayerSelect;
+    Disposable[] _disposablesLayer0;
+    Disposable[] _disposablesLayer1;
+    Disposable[] _disposablesLayer2;
+    int _currentLayer = 0;
 
-        Disposable[] disposableLayer0 = createDisposableLayer0(pad);
-        Disposable[] disposableLayer1;
-        Disposable[] disposableLayer2;
+    public Disposable[] disposables(){
+        return _disposablesLayerSelect ~ _disposablesLayer0 ~ _disposablesLayer1 ~ _disposablesLayer2;
+
+    }
+
+    public void setup(SDLGamePad pad){
+        _disposablesLayer0 = createDisposableLayer0(pad);
+        _disposablesLayer1 = createDisposableLayer1(pad);
+        _disposablesLayer2 = createDisposableLayer2(pad);
         import std.algorithm;
 
-        disposables ~=
+        _disposablesLayerSelect ~=
         pad.onDownButton(Button.Start)
                     .doSubscribe!((_){
                                             downKey(Key.Enter);
                                             upKey(Key.Enter);
                                     });
 
-        disposables ~=
+        _disposablesLayerSelect ~=
         pad.onDownButton(Button.R1)
                     .doSubscribe!((_){
-                                        if(currentLayer == 0){
-                                            disposableLayer0.each!(d => d.dispose());
-                                            disposableLayer1 = createDisposableLayer1(pad);
-                                            currentLayer = 1;
+                                        if(_currentLayer == 0){
+                                            // _disposablesLayer0.each!(d => d.dispose());
+                                            // _disposablesLayer0 = [];
+                                            // _disposablesLayer1 = createDisposableLayer1(pad);
+                                            _currentLayer = 1;
                                         }
                                     });
 
-        disposables ~=
+        _disposablesLayerSelect ~=
         pad.onUpButton(Button.R1)
                     .doSubscribe!((_){
-                                        disposableLayer1.each!(d => d.dispose());
-                                        currentLayer = 0;
-                                        disposableLayer0 = createDisposableLayer0(pad);
+                                        // _disposablesLayer1.each!(d => d.dispose());
+                                        // _disposablesLayer1 = [];
+                                        _currentLayer = 0;
+                                        // _disposablesLayer0 = createDisposableLayer0(pad);
                                     });
 
-        disposables ~=
+        _disposablesLayerSelect ~=
         pad.onDownButton(Button.R2)
                     .doSubscribe!((_){
-                                        if(currentLayer == 0){
-                                            disposableLayer0.each!(d => d.dispose());
-                                            disposableLayer2 = createDisposableLayer2(pad);
-                                            currentLayer = 2;
+                                        if(_currentLayer == 0){
+                                            // _disposablesLayer0.each!(d => d.dispose());
+                                            // _disposablesLayer0 = [];
+                                            // _disposablesLayer2 = createDisposableLayer2(pad);
+                                            _currentLayer = 2;
                                         }
                                     });
 
-        disposables ~=
+        _disposablesLayerSelect ~=
         pad.onUpButton(Button.R2)
                     .doSubscribe!((_){
-                                        disposableLayer2.each!(d => d.dispose());
-                                        currentLayer = 0;
-                                        disposableLayer0 = createDisposableLayer0(pad);
+                                        // _disposablesLayer2.each!(d => d.dispose());
+                                        // _disposablesLayer2 = [];
+                                        _currentLayer = 0;
+                                        // _disposablesLayer0 = createDisposableLayer0(pad);
                                     });
-        return disposables;
     }
+
+    auto filterWithLayere(O)(O observable, int layer){
+        return observable.filter!(v=>_currentLayer == layer);
+    }
+
+    // auto onUpButtonLayered(Button b, Layer layer){
+
+    // }
+
+    // auto onStayButtonPeriodiclyLayered(AxisButton b, Layer layer){}
+    // auto onStayButtonPeriodiclyLayered(AxisButton b, Layer layer){}
+
+
 
     auto createDisposableLayer0(SDLGamePad pad){
         Disposable[] disposables;
+        int layer = 0;
         disposables ~=
-        pad.onDownButton(Button.Y)
-                    .doSubscribe!((_){
-                                        downKey(Key.Z, 0x00100000);
-                                        upKey(Key.Z);
-                                    });
+        pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
+                                  .doSubscribe!((_){
+                                      downKey(Key.Z, 0x00100000);
+                                      upKey(Key.Z);
+                                  });
         disposables ~=
-        pad.onDownButton(Button.B)
+        pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.Z, 0x00120000);
                                             upKey(Key.Z);
                                             });
         disposables ~=
-        pad.onStayButtonPeriodicly(Button.X)
+        pad.onStayButtonPeriodicly(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.CloseBracket);
                                             upKey(Key.CloseBracket);
                                     });
         disposables ~=
-        pad.onStayButtonPeriodicly(Button.A)
+        pad.onStayButtonPeriodicly(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.OpenBracket);
                                             upKey(Key.OpenBracket);
@@ -92,7 +117,7 @@ class KeyBindClipStudio: KeyBindable{
 
         // toolselect
         disposables ~=
-        pad.onDownButton(Button.RightStick)
+        pad.onDownButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             // downKey(Key.I);
                                             toggleDefaultTool();
@@ -101,13 +126,13 @@ class KeyBindClipStudio: KeyBindable{
                                     //    upKey(Key.I);
                                     });
         disposables ~=
-        pad.onUpButton(Button.RightStick)
+        pad.onUpButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             // upKey(Key.I);
                                     });
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RLeft)
+        pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.R);
                                     })
@@ -115,14 +140,14 @@ class KeyBindClipStudio: KeyBindable{
                                         upKey(Key.R);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RLeft)
+        pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.R);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RDown)
+        pad.onDownButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.Z);
                                     })
@@ -130,14 +155,14 @@ class KeyBindClipStudio: KeyBindable{
                                         upKey(Key.Z);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RDown)
+        pad.onUpButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.Z);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RUp)
+        pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.I);
                                     })
@@ -145,14 +170,14 @@ class KeyBindClipStudio: KeyBindable{
                                         upKey(Key.I);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RUp)
+        pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.I);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RRight)
+        pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.Space);
                                     })
@@ -160,7 +185,7 @@ class KeyBindClipStudio: KeyBindable{
                                         upKey(Key.Space);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RRight)
+        pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.Space);
                                             resetToolToDefault();
@@ -171,21 +196,22 @@ class KeyBindClipStudio: KeyBindable{
 
     auto createDisposableLayer1(SDLGamePad pad){
         Disposable[] disposables;
+        int layer = 1;
         disposables ~=
-        pad.onDownButton(Button.X)
+        pad.onDownButton(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.C, 0x00100000);
                                             upKey(Key.C);
                                         });
         disposables ~=
-        pad.onDownButton(Button.A)
+        pad.onDownButton(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.D, 0x00100000);
                                             upKey(Key.D);
                                         });
 
         disposables ~=
-        pad.onDownButton(Button.Y)
+        pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.T, 0x00100000);
                                             upKey(Key.T);
@@ -194,7 +220,7 @@ class KeyBindClipStudio: KeyBindable{
                                     });
 
         disposables ~=
-        pad.onDownButton(Button.B)
+        pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.V, 0x00100000);
                                             upKey(Key.V);
@@ -204,7 +230,7 @@ class KeyBindClipStudio: KeyBindable{
 
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RUp)
+        pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.L);
                                     })
@@ -212,43 +238,40 @@ class KeyBindClipStudio: KeyBindable{
                                         upKey(Key.L);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RUp)
+        pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.W);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            upKey(Key.L);
+                                            resetToolToDefault();
                                     });
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RLeft)
+        pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.W);
                                     })
                     .withDisposed((){
-                                        upKey(Key.R);
+                                        upKey(Key.W);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RLeft)
+        pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.W);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            resetToolToDefault();
                                     });
 
 
         disposables ~=
-        pad.onDownAxisButton(AxisButton.RRight)
+        pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.V);
                                     })
                     .withDisposed((){
-                                        upKey(Key.R);
+                                        // upKey(Key.R);
                                     });
         disposables ~=
-        pad.onUpAxisButton(AxisButton.RRight)
+        pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             upKey(Key.V);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            resetToolToDefault();
                                     });
 
         return disposables;
@@ -256,30 +279,31 @@ class KeyBindClipStudio: KeyBindable{
 
     auto createDisposableLayer2(SDLGamePad pad){
         Disposable[] disposables;
+        int layer = 2;
         disposables ~=
-        pad.onDownButton(Button.Y)
+        pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             setDrawTool(Key.B);
                                             // downKey(Key.Tab); 
                                             // upKey(Key.Tab); 
                                         });
         disposables ~=
-        pad.onDownButton(Button.X)
+        pad.onDownButton(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             setDrawTool(Key.J);
                                         });
         disposables ~=
-        pad.onDownButton(Button.B)
+        pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             setDrawTool(Key.P);
                                         });
         disposables ~=
-        pad.onDownButton(Button.A)
+        pad.onDownButton(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             setDrawTool(Key.G);
                                         });
         disposables ~=
-        pad.onDownButton(Button.RightStick)
+        pad.onDownButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                             downKey(Key.Control); 
                                             downKey(Key.H); 

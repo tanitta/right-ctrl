@@ -1,4 +1,6 @@
 module keyutils;
+import std.conv;
+import std.stdio;
 
 version(OSX){
     extern(C) int* CGEventCreateKeyboardEvent(int* source, ushort key, bool flag);
@@ -17,6 +19,10 @@ void downKey(Key key, int flag = 0){
     version(Windows){
         if(flag == 0){
             sendKey(key.to!ushort, true, 0);
+        }else if(flag == 0x00020000){ // shift
+            sendKey(Key.Shift.to!ushort, true, 0);
+            sendKey(key.to!ushort, true, 0);
+            sendKey(Key.Shift.to!ushort, false, 0);
         }else if(flag == 0x00100000){ // ctrl
             sendKey(Key.Control.to!ushort, true, 0);
             sendKey(key.to!ushort, true, 0);
@@ -198,7 +204,9 @@ version(Windows){
         CloseBracket = 0xDD,
         Space = 0x20,
         J = 0x4A,
+        M = 0x4D,
         P = 0x50,
+        F = 0x46,
         G = 0x47,
         Z = 0x5A,
         I = 0x49,
@@ -216,5 +224,10 @@ version(Windows){
         F5= 0x74,
         F6= 0x75,
         F7= 0x76,
+        One = 0x31,
+        Two = 0x32,
+        Three = 0x33,
+        Four = 0x34,
+        Five = 0x35,
     }
 }

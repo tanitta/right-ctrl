@@ -38,274 +38,32 @@ class RightCtrl{
         }
 
         void setup(){
-            int currentLayer = 0;
+            import keybindclipstudio;
+            _bindables ~= new KeyBindClipStudio();
+            // import keybindrebelle;
+            // _bindables ~= new KeyBindRebelle();
+            setupSelectionKeyBind();
+            return;
+        }
 
-            Disposable[] disposableLayer0 = createDisposableLayer0;
-            Disposable[] disposableLayer1;
-            Disposable[] disposableLayer2;
+        void setupSelectionKeyBind(){
             import std.algorithm;
-
-            _currentPad.onDownButton(Button.Start)
-                       .doSubscribe!((_){
-                                             downKey(Key.Enter);
-                                             upKey(Key.Enter);
-                                        });
-
-            _currentPad.onDownButton(Button.R1)
-                       .doSubscribe!((_){
-                                            if(currentLayer == 0){
-                                                disposableLayer0.each!(d => d.dispose());
-                                                disposableLayer1 = createDisposableLayer1();
-                                                currentLayer = 1;
-                                            }
-                                        });
-            _currentPad.onUpButton(Button.R1)
-                       .doSubscribe!((_){
-                                            disposableLayer1.each!(d => d.dispose());
-                                            currentLayer = 0;
-                                            disposableLayer0 = createDisposableLayer0();
-                                        });
-
-            _currentPad.onDownButton(Button.R2)
-                       .doSubscribe!((_){
-                                            if(currentLayer == 0){
-                                                disposableLayer0.each!(d => d.dispose());
-                                                disposableLayer2 = createDisposableLayer2();
-                                                currentLayer = 2;
-                                            }
-                                        });
-            _currentPad.onUpButton(Button.R2)
-                       .doSubscribe!((_){
-                                            disposableLayer2.each!(d => d.dispose());
-                                            currentLayer = 0;
-                                            disposableLayer0 = createDisposableLayer0();
-                                        });
-        }
-
-        auto createDisposableLayer0(){
-            Disposable[] disposables;
-            disposables ~=
-            _currentPad.onDownButton(Button.Y)
-                       .doSubscribe!((_){
-                                          downKey(Key.Z, 0x00100000);
-                                          upKey(Key.Z);
-                                      });
-            disposables ~=
-            _currentPad.onDownButton(Button.B)
-                       .doSubscribe((bool b){
-                                                downKey(Key.Z, 0x00120000);
-                                                upKey(Key.Z);
-                                             });
-            disposables ~=
-            _currentPad.onStayButtonPeriodicly(Button.X)
-                       .doSubscribe((bool b){
-                                                downKey(Key.CloseBracket);
-                                                upKey(Key.CloseBracket);
-                                        });
-            disposables ~=
-            _currentPad.onStayButtonPeriodicly(Button.A)
-                       .doSubscribe((bool b){
-                                                downKey(Key.OpenBracket);
-                                                upKey(Key.OpenBracket);
-                                        });
-
-            // toolselect
-            disposables ~=
-            _currentPad.onDownButton(Button.RightStick)
-                       .doSubscribe((bool b){
-                                                // downKey(Key.I);
-                                                toggleDefaultTool();
-                                            })
-                       .withDisposed((){
-                                        //    upKey(Key.I);
-                                       });
-            disposables ~=
-            _currentPad.onUpButton(Button.RightStick)
-                       .doSubscribe((bool b){
-                                                // upKey(Key.I);
-                                        });
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RLeft)
-                       .doSubscribe((bool b){
-                                                downKey(Key.R);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.R);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RLeft)
-                       .doSubscribe((bool b){
-                                                upKey(Key.R);
-                                                resetToolToDefault();
-                                        });
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RDown)
-                       .doSubscribe((bool b){
-                                                downKey(Key.Z);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.Z);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RDown)
-                       .doSubscribe((bool b){
-                                                upKey(Key.Z);
-                                                resetToolToDefault();
-                                        });
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RUp)
-                       .doSubscribe((bool b){
-                                                downKey(Key.I);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.I);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RUp)
-                       .doSubscribe((bool b){
-                                                upKey(Key.I);
-                                                resetToolToDefault();
-                                        });
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RRight)
-                       .doSubscribe((bool b){
-                                                downKey(Key.Space);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.Space);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RRight)
-                       .doSubscribe((bool b){
-                                                upKey(Key.Space);
-                                                resetToolToDefault();
-                                        });
-
-            return disposables;
-        }
-
-        auto createDisposableLayer1(){
-            Disposable[] disposables;
-            disposables ~=
-            _currentPad.onDownButton(Button.X)
-                       .doSubscribe((bool b){
-                                                downKey(Key.C, 0x00100000);
-                                                upKey(Key.C);
-                                            });
-            disposables ~=
-            _currentPad.onDownButton(Button.A)
-                       .doSubscribe((bool b){
-                                                downKey(Key.D, 0x00100000);
-                                                upKey(Key.D);
-                                            });
-
-            disposables ~=
-            _currentPad.onDownButton(Button.Y)
-                       .doSubscribe((bool b){
-                                                downKey(Key.T, 0x00100000);
-                                                upKey(Key.T);
-                                            })
-                       .withDisposed((){
-                                       });
-
-            disposables ~=
-            _currentPad.onDownButton(Button.B)
-                       .doSubscribe((bool b){
-                                                downKey(Key.V, 0x00100000);
-                                                upKey(Key.V);
-                                            })
-                       .withDisposed((){
-                                       });
-
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RUp)
-                       .doSubscribe((bool b){
-                                                downKey(Key.L);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.L);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RUp)
-                       .doSubscribe((bool b){
-                                                upKey(Key.W);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
-                                        });
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RLeft)
-                       .doSubscribe((bool b){
-                                                downKey(Key.W);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.R);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RLeft)
-                       .doSubscribe((bool b){
-                                                upKey(Key.W);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
-                                        });
-
-
-            disposables ~=
-            _currentPad.onDownAxisButton(AxisButton.RRight)
-                       .doSubscribe((bool b){
-                                                downKey(Key.V);
-                                        })
-                       .withDisposed((){
-                                           upKey(Key.R);
-                                       });
-            disposables ~=
-            _currentPad.onUpAxisButton(AxisButton.RRight)
-                       .doSubscribe((bool b){
-                                                upKey(Key.V);
-                                                downKey(Key.B);
-                                                upKey(Key.B);
-                                        });
-
-            return disposables;
-        }
-
-        auto createDisposableLayer2(){
-            Disposable[] disposables;
-            disposables ~=
-            _currentPad.onDownButton(Button.Y)
-                       .doSubscribe((bool b){
-                                                setDrawTool(Key.B);
-                                                // downKey(Key.Tab); 
-                                                // upKey(Key.Tab); 
-                                            });
-            disposables ~=
-            _currentPad.onDownButton(Button.X)
-                       .doSubscribe((bool b){
-                                                setDrawTool(Key.J);
-                                            });
-            disposables ~=
-            _currentPad.onDownButton(Button.B)
-                       .doSubscribe((bool b){
-                                                setDrawTool(Key.P);
-                                            });
-            disposables ~=
-            _currentPad.onDownButton(Button.A)
-                       .doSubscribe((bool b){
-                                                setDrawTool(Key.G);
-                                            });
-            disposables ~=
-            _currentPad.onDownButton(Button.RightStick)
-                       .doSubscribe((bool b){
-                                                downKey(Key.Control); 
-                                                downKey(Key.H); 
-                                                upKey(Key.H); 
-                                                upKey(Key.Control); 
-                                            });
-            return disposables;
+            int currentKeyBindIndex;
+            KeyBindable currentKeyBind;
+            currentKeyBind = _bindables[0];
+            currentKeyBind.setup(_currentPad);
+            writeln("Set Keybind: ", _bindables[0].name);
+            currentPad.onDownButton(Button.Select)
+                    .doSubscribe!((_){
+                                          currentKeyBind.disposables.each!(d => d.dispose());
+                                          currentKeyBindIndex++;
+                                          if(_bindables.length<=currentKeyBindIndex){
+                                              currentKeyBindIndex = 0;
+                                          }
+                                          currentKeyBind = _bindables[currentKeyBindIndex];
+                                          currentKeyBind.setup(currentPad);
+                                          writeln("Set Keybind: ", currentKeyBind.name);
+                                    });
         }
 
         void searchPad(){
@@ -356,6 +114,7 @@ class RightCtrl{
         Key _defalutToolKey = Key.B;
         Key _drawToolKey;
         KeyBindable[] _bindables;
+        int _currentKeyBindIndex;
 
         void detectAllGamePads(){
             foreach(joystickIndex; SDL_NumJoysticks().iota){
@@ -374,33 +133,6 @@ class RightCtrl{
 
             _gamepads.length.writeln;
             SDL_GetError().to!string.writeln;
-        }
-
-        void setDrawTool(in Key key){
-            _drawToolKey = key;
-            Key prevKey = _defalutToolKey;
-            _defalutToolKey = _drawToolKey;
-            upKey(prevKey);
-            downKey(_defalutToolKey);
-            upKey(_defalutToolKey);
-        }
-
-        void toggleDefaultTool(){
-            Key prevKey = _defalutToolKey;
-            if(_defalutToolKey == _drawToolKey){
-                _defalutToolKey = Key.E;
-            }else{
-                _defalutToolKey = _drawToolKey;
-            }
-
-            upKey(prevKey);
-            downKey(_defalutToolKey);
-            upKey(_defalutToolKey);
-        }
-
-        void resetToolToDefault(){
-            downKey(_defalutToolKey);
-            upKey(_defalutToolKey);
         }
     }//private
 }//class RightCtrl

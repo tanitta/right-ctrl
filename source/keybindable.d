@@ -3,7 +3,8 @@ import gamepad;
 import rx;
 interface KeyBindable
 {
-    Disposable[] setup(SDLGamePad);
+    void setup(SDLGamePad);
     string name();
+    Disposable[] disposables();
 }
 

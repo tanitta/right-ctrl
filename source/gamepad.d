@@ -207,14 +207,14 @@ class SDLGamePad{
                                                 .map!(v => !approxEqual(v, 0));
             }
         }
-        auto onUpdateAxisButton(AxisButton axisButton){
-            return onUpdateButton(axisButton);
-            // auto axis = axisButtonToAxisTable[axisButton];
-            // auto direction = axisButtonToDirectionTable[axisButton];
-            // import std.math;
-            // return onUpdateAxisDictinctly(axis).map!(v => fmax(+0, v*direction))
-            //                                    .map!(v => !approxEqual(v, 0));
-        }
+        // auto onUpdateAxisButton(AxisButton axisButton){
+        //     return onUpdateButton(axisButton);
+        //     // auto axis = axisButtonToAxisTable[axisButton];
+        //     // auto direction = axisButtonToDirectionTable[axisButton];
+        //     // import std.math;
+        //     // return onUpdateAxisDictinctly(axis).map!(v => fmax(+0, v*direction))
+        //     //                                    .map!(v => !approxEqual(v, 0));
+        // }
 
 
 
@@ -224,9 +224,9 @@ class SDLGamePad{
                                          .filter!(v => v);
         }
 
-        auto onDownAxisButton(AxisButton axisButton){
-            return onDownButton(axisButton);
-        }
+        // auto onDownAxisButton(AxisButton axisButton){
+        //     return onDownButton(axisButton);
+        // }
 
         Observable!bool onUpButton(B)(B button){
             auto result = (new SubjectObject!bool);
@@ -241,9 +241,9 @@ class SDLGamePad{
             return result;
         }
 
-        Observable!bool onUpAxisButton(AxisButton axisButton){
-            return onUpButton(axisButton);
-        }
+        // Observable!bool onUpAxisButton(AxisButton axisButton){
+        //     return onUpButton(axisButton);
+        // }
 
         Observable!bool onStayButtonPeriodicly(B)(B button){
             Disposable buttonLongPress;
@@ -267,9 +267,9 @@ class SDLGamePad{
             return subjectButtonStayPeriodicly;
         }
 
-        Observable!bool onStayAxisButtonPeriodicly(AxisButton button){
-            return onStayButtonPeriodicly(button);
-        }
+        // Observable!bool onStayAxisButtonPeriodicly(AxisButton button){
+        //     return onStayButtonPeriodicly(button);
+        // }
 
 
         SDLGamePad update(){
