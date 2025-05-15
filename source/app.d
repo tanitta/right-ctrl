@@ -40,8 +40,8 @@ class RightCtrl{
         void setup(){
             import keybindclipstudio;
             _bindables ~= new KeyBindClipStudio();
-            // import keybindrebelle;
-            // _bindables ~= new KeyBindRebelle();
+            import keybindkrita;
+            _bindables ~= new KeyBindKrita();
             setupSelectionKeyBind();
             return;
         }
