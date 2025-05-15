@@ -3,7 +3,6 @@ import rx;
 import derelict.sdl2.sdl;
 import std.conv;
 import std.algorithm:each, canFind;
-import keybindable;
 
 enum Axis{
     LHorizontal, 
@@ -155,10 +154,6 @@ class SDLGamePad{
             return SDL_JoystickGetHat(_handle, 0) == sdlHat;
         }
 
-        void setupKeyBind(KeyBindable bindable){
-            bindable.setup();
-        }
-
         bool getButtonFromAxis(Button button, Direction direction){
             uint sdlAxis;
             if(direction == Direction.Plus){
@@ -199,43 +194,41 @@ class SDLGamePad{
                                               });
         }
 
+        auto onUpdateButton(B)(B button){
+            static if(is(B==Button)){
+                if(!_updateButtonSubjects.keys.canFind(button)) _updateButtonSubjects[button] = new SubjectObject!bool();
+                return _updateButtonSubjects[button];
+            }
+            static if(is(B==AxisButton)){
+                auto axis = axisButtonToAxisTable[button];
+                auto direction = axisButtonToDirectionTable[button];
+                import std.math;
+                return onUpdateAxisDictinctly(axis).map!(v => fmax(+0, v*direction))
+                                                .map!(v => !approxEqual(v, 0));
+            }
+        }
         auto onUpdateAxisButton(AxisButton axisButton){
-            auto axis = axisButtonToAxisTable[axisButton];
-            auto direction = axisButtonToDirectionTable[axisButton];
-            import std.math;
-            return onUpdateAxisDictinctly(axis).map!(v => fmax(+0, v*direction))
-                                               .map!(v => !approxEqual(v, 0));
+            return onUpdateButton(axisButton);
+            // auto axis = axisButtonToAxisTable[axisButton];
+            // auto direction = axisButtonToDirectionTable[axisButton];
+            // import std.math;
+            // return onUpdateAxisDictinctly(axis).map!(v => fmax(+0, v*direction))
+            //                                    .map!(v => !approxEqual(v, 0));
         }
 
-        auto onDownAxisButton(AxisButton axisButton){
-            return onUpdateAxisButton(axisButton).uniq
-                                                 .filter!(v => v);
-        }
 
-        Observable!bool onUpAxisButton(AxisButton axisButton){
-            auto result = (new SubjectObject!bool);
-            Disposable updateAxisButton;
-            onDownAxisButton(axisButton).doSubscribe!((_){
-                    if(updateAxisButton)updateAxisButton.dispose();
-                    updateAxisButton = onUpdateAxisButton(axisButton).uniq
-                                  .filter!(v => !v)
-                                  .map!(v => !v)
-                                  .doSubscribe!(v => result.put(v));
-                });
-            return result;
-        }
 
-        SubjectObject!bool onUpdateButton(Button button){
-            if(!_updateButtonSubjects.keys.canFind(button)) _updateButtonSubjects[button] = new SubjectObject!bool();
-            return _updateButtonSubjects[button];
-        }
 
-        auto onDownButton(Button button){
+        auto onDownButton(B)(B button){
             return onUpdateButton(button).uniq
                                          .filter!(v => v);
         }
 
-        Observable!bool onUpButton(Button button){
+        auto onDownAxisButton(AxisButton axisButton){
+            return onDownButton(axisButton);
+        }
+
+        Observable!bool onUpButton(B)(B button){
             auto result = (new SubjectObject!bool);
             Disposable updateButton;
             onDownButton(button).doSubscribe!((_){
@@ -248,7 +241,11 @@ class SDLGamePad{
             return result;
         }
 
-        Observable!bool onStayButtonPeriodicly(Button button){
+        Observable!bool onUpAxisButton(AxisButton axisButton){
+            return onUpButton(axisButton);
+        }
+
+        Observable!bool onStayButtonPeriodicly(B)(B button){
             Disposable buttonLongPress;
             Disposable buttonUpdate;
             auto subjectButtonStayPeriodicly = (new SubjectObject!bool);
@@ -271,35 +268,17 @@ class SDLGamePad{
         }
 
         Observable!bool onStayAxisButtonPeriodicly(AxisButton button){
-            Disposable buttonLongPress;
-            Disposable buttonUpdate;
-            auto subjectStayPeriodicly = (new SubjectObject!bool);
-            auto buttonDown = onDownAxisButton(button).doSubscribe!((value){
-                                                                           subjectStayPeriodicly.put(true);
-                                                                           buttonLongPress = onUpdateAxisButton(button).filter!(v => v)
-                                                                                                                       .take(_offset)
-                                                                                                                       .takeLast
-                                                                                                                       .doSubscribe!((value){
-                                                                                                                                            buttonUpdate = onUpdateAxisButton(button).filter!(v => v)
-                                                                                                                                                                                 .doSubscribe!(value => subjectStayPeriodicly.put(true));
-                                                                                                                                        });
-                                                                       });
-            auto buttonUp = onUpAxisButton(button).filter!(v => v)
-                                              .doSubscribe!((value){
-                                                                       if(buttonUpdate)buttonUpdate.dispose();
-                                                                       if(buttonLongPress)buttonLongPress.dispose();
-                                                                   });
-            return subjectStayPeriodicly;
+            return onStayButtonPeriodicly(button);
         }
 
 
         SDLGamePad update(){
             import std.range;
             import std.stdio;
-            foreach(i; 4.iota) {
-                auto status = SDL_JoystickGetHat(_handle, 0);
-                writeln(i, ": ", status);
-            }
+            // foreach(i; 4.iota) {
+            //     auto status = SDL_JoystickGetHat(_handle, 0);
+            //     writeln(i, ": ", status);
+            // }
 
             _registerButtons.keys.each!(button => _updateButtonSubjects[button].put(getButton(button)));
             _registerButtonsFromAxisPlusDir.keys.each!(button => _updateButtonSubjects[button].put(getButtonFromAxis(button, Direction.Plus)));
