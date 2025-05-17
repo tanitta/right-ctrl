@@ -31,6 +31,11 @@ class KeyBindKrita: KeyBindable{
                                             downKey(Key.Enter);
                                             upKey(Key.Enter);
                                     });
+        pad.onUpButton(Button.Start)
+                    .doSubscribe!((_){
+                                            downKey(Key.B);
+                                            upKey(Key.B);
+                                    });
 
         _disposablesLayerSelect ~=
         pad.onDownButton(Button.R1)
