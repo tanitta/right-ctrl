@@ -78,15 +78,6 @@ class KeyBindClipStudio: KeyBindable{
         return observable.filter!(v=>_currentLayer == layer);
     }
 
-    // auto onUpButtonLayered(Button b, Layer layer){
-
-    // }
-
-    // auto onStayButtonPeriodiclyLayered(AxisButton b, Layer layer){}
-    // auto onStayButtonPeriodiclyLayered(AxisButton b, Layer layer){}
-
-
-
     auto createDisposableLayer0(SDLGamePad pad){
         Disposable[] disposables;
         int layer = 0;
