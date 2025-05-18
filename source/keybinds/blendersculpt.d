@@ -1,12 +1,19 @@
-module keybindclipstudio;
+module keybinds.blendersculpt;
 import keybindable;
 import gamepad;
 import rx;
 import keyutils;
 
-class KeyBindClipStudio: KeyBindable{
+// TODO:
+// Smooth
+// Ctrl+Z
+// Change Brush Size
+// Camera Controll (using mod key?)
+// Change Brush
+
+class BlenderSculpt: KeyBindable{
     public string name(){
-        return "ClipStudio";
+        return "BlenderSculpt";
     }
 
     Disposable[] _disposablesLayerSelect;

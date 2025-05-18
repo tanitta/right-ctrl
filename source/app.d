@@ -38,10 +38,10 @@ class RightCtrl{
         }
 
         void setup(){
-            import keybindclipstudio;
-            _bindables ~= new KeyBindClipStudio();
-            import keybindkrita;
-            _bindables ~= new KeyBindKrita();
+            import keybinds;
+            _bindables ~= new keybinds.Krita();
+            _bindables ~= new keybinds.BlenderSculpt();
+            _bindables ~= new keybinds.ClipStudio();
             setupSelectionKeyBind();
             return;
         }

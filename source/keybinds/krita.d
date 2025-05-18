@@ -1,10 +1,10 @@
-module keybindkrita;
+module keybinds.krita;
 import keybindable;
 import gamepad;
 import rx;
 import keyutils;
 
-class KeyBindKrita: KeyBindable{
+class Krita: KeyBindable{
     public string name(){
         return "Krita";
     }
