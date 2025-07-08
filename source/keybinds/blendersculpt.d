@@ -5,10 +5,17 @@ import rx;
 import keyutils;
 
 // TODO:
-// Smooth
+
 // Ctrl+Z
+// Smooth
+
 // Change Brush Size
+
 // Camera Controll (using mod key?)
+// Zoom: Alt + Ctrl
+// Transform: Alt + Shift
+// Rotate: Alt
+
 // Change Brush
 
 class BlenderSculpt: KeyBindable{
@@ -44,9 +51,6 @@ class BlenderSculpt: KeyBindable{
         pad.onDownButton(Button.R1)
                     .doSubscribe!((_){
                                         if(_currentLayer == 0){
-                                            // _disposablesLayer0.each!(d => d.dispose());
-                                            // _disposablesLayer0 = [];
-                                            // _disposablesLayer1 = createDisposableLayer1(pad);
                                             _currentLayer = 1;
                                         }
                                     });
@@ -54,19 +58,13 @@ class BlenderSculpt: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onUpButton(Button.R1)
                     .doSubscribe!((_){
-                                        // _disposablesLayer1.each!(d => d.dispose());
-                                        // _disposablesLayer1 = [];
                                         _currentLayer = 0;
-                                        // _disposablesLayer0 = createDisposableLayer0(pad);
                                     });
 
         _disposablesLayerSelect ~=
         pad.onDownButton(Button.R2)
                     .doSubscribe!((_){
                                         if(_currentLayer == 0){
-                                            // _disposablesLayer0.each!(d => d.dispose());
-                                            // _disposablesLayer0 = [];
-                                            // _disposablesLayer2 = createDisposableLayer2(pad);
                                             _currentLayer = 2;
                                         }
                                     });
@@ -74,10 +72,7 @@ class BlenderSculpt: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onUpButton(Button.R2)
                     .doSubscribe!((_){
-                                        // _disposablesLayer2.each!(d => d.dispose());
-                                        // _disposablesLayer2 = [];
                                         _currentLayer = 0;
-                                        // _disposablesLayer0 = createDisposableLayer0(pad);
                                     });
     }
 

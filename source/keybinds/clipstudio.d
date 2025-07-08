@@ -3,6 +3,7 @@ import keybindable;
 import gamepad;
 import rx;
 import keyutils;
+import std.stdio;
 
 class ClipStudio: KeyBindable{
     public string name(){
@@ -17,7 +18,6 @@ class ClipStudio: KeyBindable{
 
     public Disposable[] disposables(){
         return _disposablesLayerSelect ~ _disposablesLayer0 ~ _disposablesLayer1 ~ _disposablesLayer2;
-
     }
 
     public void setup(SDLGamePad pad){
@@ -37,9 +37,6 @@ class ClipStudio: KeyBindable{
         pad.onDownButton(Button.R1)
                     .doSubscribe!((_){
                                         if(_currentLayer == 0){
-                                            // _disposablesLayer0.each!(d => d.dispose());
-                                            // _disposablesLayer0 = [];
-                                            // _disposablesLayer1 = createDisposableLayer1(pad);
                                             _currentLayer = 1;
                                         }
                                     });
@@ -47,19 +44,14 @@ class ClipStudio: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onUpButton(Button.R1)
                     .doSubscribe!((_){
-                                        // _disposablesLayer1.each!(d => d.dispose());
-                                        // _disposablesLayer1 = [];
                                         _currentLayer = 0;
-                                        // _disposablesLayer0 = createDisposableLayer0(pad);
+                                        // TODO: Reset Keydown
                                     });
 
         _disposablesLayerSelect ~=
         pad.onDownButton(Button.R2)
                     .doSubscribe!((_){
                                         if(_currentLayer == 0){
-                                            // _disposablesLayer0.each!(d => d.dispose());
-                                            // _disposablesLayer0 = [];
-                                            // _disposablesLayer2 = createDisposableLayer2(pad);
                                             _currentLayer = 2;
                                         }
                                     });
@@ -67,10 +59,8 @@ class ClipStudio: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onUpButton(Button.R2)
                     .doSubscribe!((_){
-                                        // _disposablesLayer2.each!(d => d.dispose());
-                                        // _disposablesLayer2 = [];
                                         _currentLayer = 0;
-                                        // _disposablesLayer0 = createDisposableLayer0(pad);
+                                        // TODO: Reset Keydown
                                     });
     }
 
@@ -226,13 +216,16 @@ class ClipStudio: KeyBindable{
                                             downKey(Key.L);
                                     })
                     .withDisposed((){
+                                        writeln("Dispose Up");
                                         upKey(Key.L);
+                                        resetToolToDefault();
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.L);
-                                            resetToolToDefault();
+                                        writeln("Dispose Up(doSubscribe)");
+                                        upKey(Key.L);
+                                        resetToolToDefault();
                                     });
         disposables ~=
         pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)

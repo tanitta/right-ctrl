@@ -11,6 +11,7 @@ import looprunner;
 import std.exception;
 import keybindable;
 import keyutils;
+import keyboard;
 
 
 // extern(C) void CFRelease(int*);
