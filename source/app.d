@@ -43,9 +43,9 @@ class RightCtrl{
             _bindables ~= new keybinds.Krita();
             _bindables ~= new keybinds.BlenderSculpt();
             _bindables ~= new keybinds.ClipStudio();
-            setupSelectionKeyBind();
 
             _keyboard = new Keyboard();
+            setupSelectionKeyBind();
             return;
         }
 

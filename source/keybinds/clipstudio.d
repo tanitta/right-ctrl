@@ -32,8 +32,8 @@ class ClipStudio: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onDownButton(Button.Start)
                     .doSubscribe!((_){
-                                            downKey(Key.Enter);
-                                            upKey(Key.Enter);
+                                            _keyboard.downKey(Key.Enter);
+                                            _keyboard.upKey(Key.Enter);
                                     });
 
         _disposablesLayerSelect ~=
@@ -49,6 +49,7 @@ class ClipStudio: KeyBindable{
                     .doSubscribe!((_){
                                         _currentLayer = 0;
                                         // TODO: Reset Keydown
+                                        _keyboard.reset();
                                     });
 
         _disposablesLayerSelect ~=
@@ -64,6 +65,7 @@ class ClipStudio: KeyBindable{
                     .doSubscribe!((_){
                                         _currentLayer = 0;
                                         // TODO: Reset Keydown
+                                        _keyboard.reset();
                                     });
     }
 
@@ -77,26 +79,26 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                                   .doSubscribe!((_){
-                                      downKey(Key.Z, 0x00100000);
-                                      upKey(Key.Z);
+                                      _keyboard.downKey(Key.Z, 0x00100000);
+                                      _keyboard.upKey(Key.Z);
                                   });
         disposables ~=
         pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Z, 0x00120000);
-                                            upKey(Key.Z);
+                                            _keyboard.downKey(Key.Z, 0x00120000);
+                                            _keyboard.upKey(Key.Z);
                                             });
         disposables ~=
         pad.onStayButtonPeriodicly(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.CloseBracket);
-                                            upKey(Key.CloseBracket);
+                                            _keyboard.downKey(Key.CloseBracket);
+                                            _keyboard.upKey(Key.CloseBracket);
                                     });
         disposables ~=
         pad.onStayButtonPeriodicly(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.OpenBracket);
-                                            upKey(Key.OpenBracket);
+                                            _keyboard.downKey(Key.OpenBracket);
+                                            _keyboard.upKey(Key.OpenBracket);
                                     });
 
         // toolselect
@@ -118,60 +120,60 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.R);
+                                            _keyboard.downKey(Key.R);
                                     })
                     .withDisposed((){
-                                        upKey(Key.R);
+                                        _keyboard.upKey(Key.R);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.R);
+                                            _keyboard.upKey(Key.R);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Z);
+                                            _keyboard.downKey(Key.Z);
                                     })
                     .withDisposed((){
-                                        upKey(Key.Z);
+                                        _keyboard.upKey(Key.Z);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.Z);
+                                            _keyboard.upKey(Key.Z);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.I);
+                                            _keyboard.downKey(Key.I);
                                     })
                     .withDisposed((){
-                                        upKey(Key.I);
+                                        _keyboard.upKey(Key.I);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.I);
+                                            _keyboard.upKey(Key.I);
                                             resetToolToDefault();
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Space);
+                                            _keyboard.downKey(Key.Space);
                                     })
                     .withDisposed((){
-                                        upKey(Key.Space);
+                                        _keyboard.upKey(Key.Space);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.Space);
+                                            _keyboard.upKey(Key.Space);
                                             resetToolToDefault();
                                     });
 
@@ -184,21 +186,21 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.C, 0x00100000);
-                                            upKey(Key.C);
+                                            _keyboard.downKey(Key.C, 0x00100000);
+                                            _keyboard.upKey(Key.C);
                                         });
         disposables ~=
         pad.onDownButton(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.D, 0x00100000);
-                                            upKey(Key.D);
+                                            _keyboard.downKey(Key.D, 0x00100000);
+                                            _keyboard.upKey(Key.D);
                                         });
 
         disposables ~=
         pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.T, 0x00100000);
-                                            upKey(Key.T);
+                                            _keyboard.downKey(Key.T, 0x00100000);
+                                            _keyboard.upKey(Key.T);
                                         })
                     .withDisposed((){
                                     });
@@ -206,8 +208,8 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.V, 0x00100000);
-                                            upKey(Key.V);
+                                            _keyboard.downKey(Key.V, 0x00100000);
+                                            _keyboard.upKey(Key.V);
                                         })
                     .withDisposed((){
                                     });
@@ -216,32 +218,32 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.L);
+                                            _keyboard.downKey(Key.L);
                                     })
                     .withDisposed((){
                                         writeln("Dispose Up");
-                                        upKey(Key.L);
+                                        _keyboard.upKey(Key.L);
                                         resetToolToDefault();
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
                                         writeln("Dispose Up(doSubscribe)");
-                                        upKey(Key.L);
+                                        _keyboard.upKey(Key.L);
                                         resetToolToDefault();
                                     });
         disposables ~=
         pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.W);
+                                            _keyboard.downKey(Key.W);
                                     })
                     .withDisposed((){
-                                        upKey(Key.W);
+                                        _keyboard.upKey(Key.W);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.W);
+                                            _keyboard.upKey(Key.W);
                                             resetToolToDefault();
                                     });
 
@@ -249,7 +251,7 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.V);
+                                            _keyboard.downKey(Key.V);
                                     })
                     .withDisposed((){
                                         // upKey(Key.R);
@@ -257,7 +259,7 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.V);
+                                            _keyboard.upKey(Key.V);
                                             resetToolToDefault();
                                     });
 
@@ -292,10 +294,10 @@ class ClipStudio: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Control); 
-                                            downKey(Key.H); 
-                                            upKey(Key.H); 
-                                            upKey(Key.Control); 
+                                            _keyboard.downKey(Key.Control); 
+                                            _keyboard.downKey(Key.H); 
+                                            _keyboard.upKey(Key.H); 
+                                            _keyboard.upKey(Key.Control); 
                                         });
         return disposables;
     }
@@ -306,9 +308,9 @@ class ClipStudio: KeyBindable{
         _drawToolKey = key;
         Key prevKey = _defalutToolKey;
         _defalutToolKey = _drawToolKey;
-        upKey(prevKey);
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.upKey(prevKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 
     void toggleDefaultTool(){
@@ -319,13 +321,13 @@ class ClipStudio: KeyBindable{
             _defalutToolKey = _drawToolKey;
         }
 
-        upKey(prevKey);
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.upKey(prevKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 
     void resetToolToDefault(){
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 }

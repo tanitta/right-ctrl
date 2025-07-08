@@ -31,13 +31,13 @@ class Krita: KeyBindable{
         _disposablesLayerSelect ~=
         pad.onDownButton(Button.Start)
                     .doSubscribe!((_){
-                                            downKey(Key.Enter);
-                                            upKey(Key.Enter);
+                                            _keyboard.downKey(Key.Enter);
+                                            _keyboard.upKey(Key.Enter);
                                     });
         pad.onUpButton(Button.Start)
                     .doSubscribe!((_){
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
         _disposablesLayerSelect ~=
@@ -52,6 +52,7 @@ class Krita: KeyBindable{
         pad.onUpButton(Button.R1)
                     .doSubscribe!((_){
                                         _currentLayer = 0;
+                                        _keyboard.reset();
                                     });
 
         _disposablesLayerSelect ~=
@@ -66,6 +67,7 @@ class Krita: KeyBindable{
         pad.onUpButton(Button.R2)
                     .doSubscribe!((_){
                                         _currentLayer = 0;
+                                        _keyboard.reset();
                                     });
     }
 
@@ -79,112 +81,112 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                                   .doSubscribe!((_){
-                                      downKey(Key.Z, 0x00100000);
-                                      upKey(Key.Z);
+                                      _keyboard.downKey(Key.Z, 0x00100000);
+                                      _keyboard.upKey(Key.Z);
                                   });
         disposables ~=
         pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Z, 0x00120000);
-                                            upKey(Key.Z);
+                                            _keyboard.downKey(Key.Z, 0x00120000);
+                                            _keyboard.upKey(Key.Z);
                                             });
         disposables ~=
         pad.onStayButtonPeriodicly(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.CloseBracket);
-                                            upKey(Key.CloseBracket);
+                                            _keyboard.downKey(Key.CloseBracket);
+                                            _keyboard.upKey(Key.CloseBracket);
                                     });
         disposables ~=
         pad.onStayButtonPeriodicly(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.OpenBracket);
-                                            upKey(Key.OpenBracket);
+                                            _keyboard.downKey(Key.OpenBracket);
+                                            _keyboard.upKey(Key.OpenBracket);
                                     });
 
         // toolselect
         disposables ~=
         pad.onDownButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                        downKey(Key.E);
+                                        _keyboard.downKey(Key.E);
                                         })
                     .withDisposed((){
-                                       upKey(Key.E);
+                                       _keyboard.upKey(Key.E);
                                     });
         disposables ~=
         pad.onUpButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                       upKey(Key.E);
+                                       _keyboard.upKey(Key.E);
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Shift);
-                                            downKey(Key.Space);
+                                            _keyboard.downKey(Key.Shift);
+                                            _keyboard.downKey(Key.Space);
                                     })
                     .withDisposed((){
-                                            upKey(Key.Space);
-                                            upKey(Key.Shift);
+                                            _keyboard.upKey(Key.Space);
+                                            _keyboard.upKey(Key.Shift);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.Space);
-                                            upKey(Key.Shift);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.Space);
+                                            _keyboard.upKey(Key.Shift);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                             // resetToolToDefault();
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Control);
-                                            downKey(Key.Space);
+                                            _keyboard.downKey(Key.Control);
+                                            _keyboard.downKey(Key.Space);
                                     })
                     .withDisposed((){
-                                            upKey(Key.Space);
-                                            upKey(Key.Control);
+                                            _keyboard.upKey(Key.Space);
+                                            _keyboard.upKey(Key.Control);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RDown).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.Space);
-                                            upKey(Key.Control);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.Space);
+                                            _keyboard.upKey(Key.Control);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.I);
+                                            _keyboard.downKey(Key.I);
                                     })
                     .withDisposed((){
-                                        upKey(Key.I);
+                                        _keyboard.upKey(Key.I);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.I);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.I);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
         disposables ~=
         pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Space);
+                                            _keyboard.downKey(Key.Space);
                                     })
                     .withDisposed((){
-                                        upKey(Key.Space);
+                                        _keyboard.upKey(Key.Space);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.Space);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.Space);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
         return disposables;
@@ -196,21 +198,21 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.X).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.C, 0x00100000);
-                                            upKey(Key.C);
+                                            _keyboard.downKey(Key.C, 0x00100000);
+                                            _keyboard.upKey(Key.C);
                                         });
         disposables ~=
         pad.onDownButton(Button.A).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.D, 0x00100000);
-                                            upKey(Key.D);
+                                            _keyboard.downKey(Key.D, 0x00100000);
+                                            _keyboard.upKey(Key.D);
                                         });
 
         disposables ~=
         pad.onDownButton(Button.Y).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.T, 0x00100000);
-                                            upKey(Key.T);
+                                            _keyboard.downKey(Key.T, 0x00100000);
+                                            _keyboard.upKey(Key.T);
                                         })
                     .withDisposed((){
                                     });
@@ -218,8 +220,8 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.B).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.V, 0x00100000);
-                                            upKey(Key.V);
+                                            _keyboard.downKey(Key.V, 0x00100000);
+                                            _keyboard.upKey(Key.V);
                                         })
                     .withDisposed((){
                                     });
@@ -228,39 +230,39 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onDownButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.L);
+                                            _keyboard.downKey(Key.L);
                                     })
                     .withDisposed((){
-                                        upKey(Key.L);
+                                        _keyboard.upKey(Key.L);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RUp).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.L);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.L);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
         disposables ~=
         pad.onDownButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.W);
+                                            _keyboard.downKey(Key.W);
                                     })
                     .withDisposed((){
-                                        upKey(Key.W);
+                                        _keyboard.upKey(Key.W);
                                     });
         disposables ~=
         pad.onUpButton(AxisButton.RLeft).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.W);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.W);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
 
         disposables ~=
         pad.onDownButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.V);
+                                            _keyboard.downKey(Key.V);
                                     })
                     .withDisposed((){
                                         // upKey(Key.R);
@@ -268,9 +270,9 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onUpButton(AxisButton.RRight).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            upKey(Key.V);
-                                            downKey(Key.B);
-                                            upKey(Key.B);
+                                            _keyboard.upKey(Key.V);
+                                            _keyboard.downKey(Key.B);
+                                            _keyboard.upKey(Key.B);
                                     });
 
         return disposables;
@@ -304,10 +306,10 @@ class Krita: KeyBindable{
         disposables ~=
         pad.onDownButton(Button.RightStick).filter!(v=>_currentLayer == layer)
                     .doSubscribe((bool b){
-                                            downKey(Key.Control); 
-                                            downKey(Key.H); 
-                                            upKey(Key.H); 
-                                            upKey(Key.Control); 
+                                            _keyboard.downKey(Key.Control); 
+                                            _keyboard.downKey(Key.H); 
+                                            _keyboard.upKey(Key.H); 
+                                            _keyboard.upKey(Key.Control); 
                                         });
         return disposables;
     }
@@ -318,9 +320,9 @@ class Krita: KeyBindable{
         _drawToolKey = key;
         Key prevKey = _defalutToolKey;
         _defalutToolKey = _drawToolKey;
-        upKey(prevKey);
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.upKey(prevKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 
     void toggleDefaultTool(){
@@ -331,13 +333,13 @@ class Krita: KeyBindable{
             _defalutToolKey = _drawToolKey;
         }
 
-        upKey(prevKey);
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.upKey(prevKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 
     void resetToolToDefault(){
-        downKey(_defalutToolKey);
-        upKey(_defalutToolKey);
+        _keyboard.downKey(_defalutToolKey);
+        _keyboard.upKey(_defalutToolKey);
     }
 }
