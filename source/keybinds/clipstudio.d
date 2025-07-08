@@ -4,6 +4,7 @@ import gamepad;
 import rx;
 import keyutils;
 import std.stdio;
+import keyboard;
 
 class ClipStudio: KeyBindable{
     public string name(){
@@ -15,12 +16,14 @@ class ClipStudio: KeyBindable{
     Disposable[] _disposablesLayer1;
     Disposable[] _disposablesLayer2;
     int _currentLayer = 0;
+    Keyboard _keyboard;
 
     public Disposable[] disposables(){
         return _disposablesLayerSelect ~ _disposablesLayer0 ~ _disposablesLayer1 ~ _disposablesLayer2;
     }
 
-    public void setup(SDLGamePad pad){
+    public void setup(SDLGamePad pad, Keyboard keyboard){
+        _keyboard = keyboard;
         _disposablesLayer0 = createDisposableLayer0(pad);
         _disposablesLayer1 = createDisposableLayer1(pad);
         _disposablesLayer2 = createDisposableLayer2(pad);

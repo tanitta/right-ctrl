@@ -44,6 +44,8 @@ class RightCtrl{
             _bindables ~= new keybinds.BlenderSculpt();
             _bindables ~= new keybinds.ClipStudio();
             setupSelectionKeyBind();
+
+            _keyboard = new Keyboard();
             return;
         }
 
@@ -52,7 +54,7 @@ class RightCtrl{
             int currentKeyBindIndex;
             KeyBindable currentKeyBind;
             currentKeyBind = _bindables[0];
-            currentKeyBind.setup(_currentPad);
+            currentKeyBind.setup(_currentPad, _keyboard);
             writeln("Set Keybind: ", _bindables[0].name);
             currentPad.onDownButton(Button.Select)
                     .doSubscribe!((_){
@@ -62,7 +64,8 @@ class RightCtrl{
                                               currentKeyBindIndex = 0;
                                           }
                                           currentKeyBind = _bindables[currentKeyBindIndex];
-                                          currentKeyBind.setup(currentPad);
+                                          _keyboard.reset();
+                                          currentKeyBind.setup(currentPad, _keyboard);
                                           writeln("Set Keybind: ", currentKeyBind.name);
                                     });
         }
@@ -116,6 +119,7 @@ class RightCtrl{
         Key _drawToolKey;
         KeyBindable[] _bindables;
         int _currentKeyBindIndex;
+        Keyboard _keyboard;
 
         void detectAllGamePads(){
             foreach(joystickIndex; SDL_NumJoysticks().iota){

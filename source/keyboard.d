@@ -1,7 +1,8 @@
 module keyboard;
 import keyutils;
+import std.conv;
 
-class Keyboard(){
+class Keyboard{
     public{
         this(){}
 
@@ -40,7 +41,7 @@ class Keyboard(){
 
         void reset(){
             foreach(flag; isPressed.keys){
-                foreach(key; isPressed[flag]){
+                foreach(key; isPressed[flag].keys){
                     if(isPressed[flag][key]){
                         isPressed[flag][key] = false;
                         upKey(key, flag);
@@ -50,6 +51,6 @@ class Keyboard(){
         }
     }
 
-    bool[string][int] isPressed;
+    bool[Key][int] isPressed;
 }
 
